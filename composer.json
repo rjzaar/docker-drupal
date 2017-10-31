@@ -10,7 +10,7 @@
     "drupal-composer/drupal-scaffold": "^2.0.0",
     "cweagans/composer-patches": ">=1.0",
     "drush/drush": "8.*@stable",
-    "jaypan/jquery_colorpicker": "1.3",
+    "jaypan/jquery_colorpicker": "^1.0",
     "rjzaar/opencourse": "dev-master",
     "goalgorilla/open_social_scripts": "dev-master"
   },
@@ -48,7 +48,7 @@
             "package": {
                 "name": "jaypan/jquery_colorpicker",
                 "type": "drupal-library",
-                "version": "1.3",
+                "version": "1.0.1",
                 "source": {
                     "url": "https://github.com/jaypan/jquery_colorpicker",
                     "type": "git",
