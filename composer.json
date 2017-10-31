@@ -89,7 +89,6 @@
       "html/libraries/{$name}": [
         "type:drupal-library",
         "type:bower-asset",
-        "jquery_colorpicker",
         "type:npm-asset"
       ],
       "scripts/{$name}": [
