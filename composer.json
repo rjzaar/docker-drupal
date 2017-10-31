@@ -11,7 +11,9 @@
     "cweagans/composer-patches": "1.5.0",
     "drush/drush": "8.*@stable",
     "rjzaar/opencourse": "dev-master",
-    "goalgorilla/open_social_scripts": "dev-master"
+    "goalgorilla/open_social_scripts": "dev-master",
+    "drupal/jquery_colorpicker": "^1.3",
+    "jquery_colorpicker": "master"
   },
   "require-dev": {
     "jcalderonzumba/gastonjs": "~1.0.2",
@@ -29,6 +31,8 @@
     "phpmd/phpmd": "@stable",
     "pdepend/pdepend": "2.1.0",
     "sebastian/phpcpd": "*",
+    "drupal/devel": "^1.2",
+    "drupal/kint": "^1.2",
     "phpunit/phpunit": "4.8"
   },
   "repositories": [
@@ -39,6 +43,22 @@
     {
       "type": "composer",
       "url": "https://asset-packagist.org"
+    },
+    {
+      "type": "package",
+      "package": {
+          "name": "jquery_colorpicker",
+          "version": "master",
+          "type"    : "drupal-library",
+          "dist": {
+              "type": "zip",
+              "url": "https://github.com/jaypan/jquery_colorpicker/archive/master.zip",
+              "reference": "master"
+          },
+          "require": {
+            "composer/installers": "~1.0"
+          }
+      }
     }
   ],
   "scripts": {
@@ -73,6 +93,7 @@
       "html/libraries/{$name}": [
         "type:drupal-library",
         "type:bower-asset",
+        "jquery_colorpicker",
         "type:npm-asset"
       ],
       "scripts/{$name}": [
