@@ -1,9 +1,9 @@
-Drupal development with Docker
+Opencourse
 ==============================
 
 [![](https://images.microbadger.com/badges/image/wadmiraal/drupal.svg)](https://microbadger.com/images/wadmiraal/drupal "Get your own image badge on microbadger.com") [![Build Status](https://travis-ci.org/wadmiraal/docker-drupal.svg?branch=master)](https://travis-ci.org/wadmiraal/docker-drupal)
 
-Quick and easy to use Docker container for your *local Drupal development*. It contains a LAMP stack and an SSH server, along with an up to date version of Drush. It is based on [Debian Stretch](https://wiki.debian.org/DebianStretch).
+Opencourse modules built on [opensocial](https://github.com/goalgorilla/drupal_social) This is a merge of opensocial and wadmiraal/docker-drupal. It contains a LAMP stack and an SSH server, along with an up to date version of Drush. It is based on [Debian Stretch](https://wiki.debian.org/DebianStretch). It then installs opensocial with composer.
 
 Summary
 -------
