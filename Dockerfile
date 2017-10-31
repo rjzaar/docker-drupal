@@ -115,6 +115,27 @@ RUN curl https://drupalconsole.com/installer -L -o drupal.phar && \
 	chmod +x /usr/local/bin/drupal
 RUN drupal init
 
+# From opensocial
+# Install Open Social via composer.
+RUN rm -f /var/www/composer.lock
+RUN rm -rf /root/.composer
+
+ADD composer.json /var/www/composer.json
+WORKDIR /var/www/
+RUN composer install --prefer-dist --no-interaction --no-dev
+
+WORKDIR /var/www/html/
+RUN chown -R www-data:www-data *
+
+# Unfortunately, adding the composer vendor dir to the PATH doesn't seem to work. So:
+RUN ln -s /var/www/vendor/bin/drush /usr/local/bin/drush
+
+RUN php -r 'opcache_reset();'
+
+# Fix shell.
+RUN echo "export TERM=xterm" >> ~/.bashrc
+#end from opensocial
+
 # Install Drupal.
 RUN rm -rf /var/www
 RUN cd /var && \
