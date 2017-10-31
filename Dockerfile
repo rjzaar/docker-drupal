@@ -122,7 +122,7 @@ RUN rm -rf /root/.composer
 
 ADD composer.json /var/www/composer.json
 WORKDIR /var/www/
-RUN composer install --prefer-dist --no-interaction --no-dev
+RUN composer install --prefer-dist --no-interaction
 
 WORKDIR /var/www/html/
 RUN chown -R www-data:www-data *
