@@ -147,22 +147,7 @@ RUN mysql -u drupal -pdrupal -e "CREATE DATABASE drupal CHARACTER SET utf8mb4 CO
 RUN cd /var/www/html/sites/default
 
 # Create settings.local.php
-RUN echo "<?php
-
-\$settings['install_profile'] = 'social';
-\$settings['file_private_path'] =  '/var/www/files_private';
-\$databases['default']['default'] = array (
-  'database' => 'drupal',
-  'username' => 'drupal',
-  'password' => 'drupal',
-  'prefix' => '',
-  'host' => 'localhost',
-  'port' => '3306',
-  'namespace' => 'Drupal\\Core\\Database\\Driver\\mysql',
-  'driver' => 'mysql',
-);
-" > settings.local.php
-
+ADD settings.local.php /var/www/html/sites/default/settings.local.php
 
 # Install drupal site
 RUN cd /var/www/html
