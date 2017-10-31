@@ -136,36 +136,81 @@ RUN php -r 'opcache_reset();'
 RUN echo "export TERM=xterm" >> ~/.bashrc
 #end from opensocial
 
-# Install Drupal.
-RUN rm -rf /var/www
-RUN cd /var && \
-	drush dl drupal-$DRUPAL_VERSION && \
-	mv /var/drupal* /var/www
-RUN mkdir -p /var/www/sites/default/files && \
-	chmod a+w /var/www/sites/default -R && \
-	mkdir /var/www/sites/all/modules/contrib -p && \
-	mkdir /var/www/sites/all/modules/custom && \
-	mkdir /var/www/sites/all/themes/contrib -p && \
-	mkdir /var/www/sites/all/themes/custom && \
+# Prep Drupal install.
+# Patch .htaccess
+RUN sed -i '4iOptions +FollowSymLinks' /var/www/html/.htaccess
+
+# Create database
+RUN mysql -u drupal -pdrupal -e "CREATE DATABASE drupal CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci";
+
+# Set up settings.local.php so drush won't add database connections to settings.php
+RUN cd /var/www/html/sites/default
+
+# Create settings.local.php
+RUN echo "<?php
+
+\$settings['install_profile'] = 'social';
+\$settings['file_private_path'] =  '/var/www/files_private';
+\$databases['default']['default'] = array (
+  'database' => 'drupal',
+  'username' => 'drupal',
+  'password' => 'drupal',
+  'prefix' => '',
+  'host' => 'localhost',
+  'port' => '3306',
+  'namespace' => 'Drupal\\Core\\Database\\Driver\\mysql',
+  'driver' => 'mysql',
+);
+" > settings.local.php
+
+
+# Install drupal site
+RUN cd /var/www/html
+# drupal site:install  social --langcode="en" --db-type="mysql" --db-host="127.0.0.1" --db-name="$dir" --db-user="$dir" --db-pass="$dir" --db-port="3306" --site-name="$dir" --site-mail="admin@example.com" --account-name="admin" --account-mail="admin@example.com" --account-pass="admin" --no-interaction
+RUN drush -y site-install social  --account-name=admin --account-pass=admin --account-mail=admin@example.com --site-name="Opencourse"
+# You don't need --db-url=mysql://$dir:$dir@localhost:3306/$dir in drush because the settings.local.php has it.
+
+# Create private files directory.
+RUN mkdir /var/www/files_private
+RUN chmod 770 -R /var/www/files_private
+RUN chown www-data:www-data -R /var/www/files_private
+
+# Install all required modules
+# ocdev is a wrapper for all the dev modules and installs all the production modules. The wrappers are then uninstalled so it is easy to uninstall individual modules.
+RUN drush en -y ocdev
+
+# Uninstall the wrapper. Will leave all dependencies installed.
+RUN sudo -u rob drush pm-uninstall -y ocdev
+RUN sudo -u rob drush pm-uninstall -y ocprod
+
+# give write access to custom so we can export features.
+RUN chmod g+w -R $dir/html/modules/custom
+
+
+RUN chmod ug+w /var/www/sites/default -R && \
 	cp /var/www/sites/default/default.settings.php /var/www/sites/default/settings.php && \
 	cp /var/www/sites/default/default.services.yml /var/www/sites/default/services.yml && \
-	chmod 0664 /var/www/sites/default/settings.php && \
-	chmod 0664 /var/www/sites/default/services.yml && \
+	chmod 0660 /var/www/sites/default/settings.php && \
+	chmod 0660 /var/www/sites/default/services.yml && \
 	chown -R www-data:www-data /var/www/
-RUN /etc/init.d/mysql start && \
-	cd /var/www && \
-	drush si -y standard --db-url=mysql://drupal:drupal@localhost/drupal --account-pass=admin && \
-	drush dl admin_menu devel && \
-	# In order to enable Simpletest, we need to download PHPUnit.
-	composer install --dev && \
-	# Admin Menu is broken. See https://www.drupal.org/node/2563867 for more info.
-	# As long as it is not fixed, only enable simpletest and devel.
-	# drush en -y admin_menu simpletest devel
-	drush en -y simpletest devel && \
-	drush en -y bartik
-RUN /etc/init.d/mysql start && \
-	cd /var/www && \
-	drush cset system.theme default 'bartik' -y
+	
+# Changing permissions of all directories to "rwxr-x---"
+# find . -type d -exec chmod u=rwx,g=rx,o= '{}' \;
+
+# Changing permissions of all files to "rw-r-----"
+#find . -type f -exec chmod u=rw,g=r,o= '{}' \;
+
+# Changing permissions of "files" directories in "sites" to "rwxrwx---"
+#cd /var/www/html/sites
+#find . -type d -name files -exec chmod ug=rwx,o= '{}' \;
+
+# Changing permissions of all files inside all "files" directories in "/sites" to "rw-rw----"
+# Changing permissions of all directories inside all "files" directories in "/sites" to "rwxrwx---"
+RUN for x in ./*/files; do && \
+	  find ${x} -type d -exec chmod ug=rwx,o= '{}' \;  && \
+	  find ${x} -type f -exec chmod ug=rw,o= '{}' \;  && \
+	done
+
 # Allow Kernel and Browser tests to be run via PHPUnit.	
 RUN sed -i 's/name="SIMPLETEST_DB" value=""/name="SIMPLETEST_DB" value="sqlite:\/\/localhost\/tmp\/db.sqlite"/' /var/www/core/phpunit.xml.dist
 
