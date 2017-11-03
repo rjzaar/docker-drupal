@@ -1,6 +1,6 @@
 {
   "name": "rjzaar/opencourse_docker",
-  "description": "Opencourse docker template for composer based Open Social projects.",
+  "description": "Opencourse docker template for composer based on varbase.",
   "type": "project",
   "license": "GPL-2.0+",
   "minimum-stability": "dev",
