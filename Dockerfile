@@ -1,7 +1,8 @@
 FROM debian:stretch
-MAINTAINER Wouter Admiraal <wad@wadmiraal.net>
+MAINTAINER Robert Zaar <rob@cathnet.org>
 ENV DEBIAN_FRONTEND noninteractive
 ENV DRUPAL_VERSION 8.3.6
+# Based on wadmiraal/docker-drupal
 
 # Install packages.
 RUN apt-get update
@@ -115,8 +116,8 @@ RUN curl https://drupalconsole.com/installer -L -o drupal.phar && \
 	chmod +x /usr/local/bin/drupal
 RUN drupal init
 
-# From opensocial
-# Install Open Social via composer.
+# Copied from Open Social
+# Install via composer.
 RUN rm -f /var/www/composer.lock
 RUN rm -rf /root/.composer
 
@@ -138,19 +139,19 @@ RUN echo "export TERM=xterm" >> ~/.bashrc
 
 # Prep Drupal install.
 # Patch .htaccess
-RUN sed -i '4iOptions +FollowSymLinks' /var/www/html/.htaccess
+RUN sed -i '4iOptions +FollowSymLinks' /var/www/docroot/.htaccess
 
 # Create database
 RUN mysql -u drupal -pdrupal -e "CREATE DATABASE drupal CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci";
 
 # Set up settings.local.php so drush won't add database connections to settings.php
-RUN cd /var/www/html/sites/default
+RUN cd /var/www/docroot/sites/default
 
 # Create settings.local.php
-ADD settings.local.php /var/www/html/sites/default/settings.local.php
+ADD settings.local.php /var/www/docroot/sites/default/settings.local.php
 
 # Install drupal site
-RUN cd /var/www/html
+RUN cd /var/www/docroot
 # drupal site:install  social --langcode="en" --db-type="mysql" --db-host="127.0.0.1" --db-name="$dir" --db-user="$dir" --db-pass="$dir" --db-port="3306" --site-name="$dir" --site-mail="admin@example.com" --account-name="admin" --account-mail="admin@example.com" --account-pass="admin" --no-interaction
 RUN drush -y site-install social  --account-name=admin --account-pass=admin --account-mail=admin@example.com --site-name="Opencourse"
 # You don't need --db-url=mysql://$dir:$dir@localhost:3306/$dir in drush because the settings.local.php has it.
@@ -169,14 +170,14 @@ RUN sudo -u rob drush pm-uninstall -y ocdev
 RUN sudo -u rob drush pm-uninstall -y ocprod
 
 # give write access to custom so we can export features.
-RUN chmod g+w -R $dir/html/modules/custom
+RUN chmod g+w -R $dir/docroot/modules/custom
 
 
-RUN chmod ug+w /var/www/sites/default -R && \
-	cp /var/www/sites/default/default.settings.php /var/www/sites/default/settings.php && \
-	cp /var/www/sites/default/default.services.yml /var/www/sites/default/services.yml && \
-	chmod 0660 /var/www/sites/default/settings.php && \
-	chmod 0660 /var/www/sites/default/services.yml && \
+RUN chmod ug+w /var/www/docroot/sites/default -R && \
+	cp /var/www/docroot/sites/default/default.settings.php /var/www/docroot/sites/default/settings.php && \
+	cp /var/www/docroot/sites/default/default.services.yml /var/www/docroot/sites/default/services.yml && \
+	chmod 0660 /var/www/docroot/sites/default/settings.php && \
+	chmod 0660 /var/www/docroot/sites/default/services.yml && \
 	chown -R www-data:www-data /var/www/
 	
 # Changing permissions of all directories to "rwxr-x---"
