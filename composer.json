@@ -10,7 +10,7 @@
     "drupal-composer/drupal-scaffold": "^2.0.0",
     "cweagans/composer-patches": ">=1.0",
     "drush/drush": "8.*@stable",
-    "rjzaar/opencourse": "^8.4.10"
+    "rjzaar/opencourse": "dev-master"
   },
   "require-dev": {
     "jcalderonzumba/gastonjs": "~1.0.2",
@@ -29,8 +29,7 @@
     "pdepend/pdepend": "2.1.0",
     "sebastian/phpcpd": "*",
     "drupal/devel": "^1.2",
-    "drupal/kint": "^1.2",
-    "phpunit/phpunit": "4.8"
+    "drupal/kint": "^1.2"
   },
   "repositories": [
     {
