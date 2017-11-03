@@ -10,7 +10,7 @@
     "drupal-composer/drupal-scaffold": "^2.0.0",
     "cweagans/composer-patches": ">=1.0",
     "drush/drush": "8.*@stable",
-    "rjzaar/opencourse": "dev-master"
+    "rjzaar/opencourse": "^8.4.10"
   },
   "require-dev": {
     "jcalderonzumba/gastonjs": "~1.0.2",
