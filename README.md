@@ -3,7 +3,7 @@ Opencourse
 
 [![](https://images.microbadger.com/badges/image/wadmiraal/drupal.svg)](https://microbadger.com/images/wadmiraal/drupal "Get your own image badge on microbadger.com") [![Build Status](https://travis-ci.org/wadmiraal/docker-drupal.svg?branch=master)](https://travis-ci.org/wadmiraal/docker-drupal)
 
-Opencourse modules built on [varbase](https://www.drupal.org/project/varbase) This is a merge of opensocial and wadmiraal/docker-drupal. It contains a LAMP stack and an SSH server, along with an up to date version of Drush. It is based on [Debian Stretch](https://wiki.debian.org/DebianStretch). It then installs opencourse with composer.
+Opencourse modules built on [varbase](https://www.drupal.org/project/varbase). But this docker file is a merge of opensocial and wadmiraal/docker-drupal. It contains a LAMP stack and an SSH server, along with an up to date version of Drush. It is based on [Debian Stretch](https://wiki.debian.org/DebianStretch). It then installs opencourse with composer.
 
 Summary
 -------
