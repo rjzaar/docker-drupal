@@ -1,21 +1,21 @@
 #!/bin/bash
 # Small script to test builds.
 TAG='local'
-CONTAINER_NAME='local_wadmiraal_drupal_test_build'
+CONTAINER_NAME='local_opencourse_drupal_test_build'
 DOCKER='sudo docker'
 
 EXIT_CODE=0
 echo -e "\e[32mStarting new build...\e[0m"
 
 # Build the image, without any caching.
-$DOCKER build -t wadmiraal/drupal:$TAG .
+$DOCKER build -t rjzaar/opencourse:$TAG .
 
 if [[ -z $? ]]; then
   echo -e "\e[31mBuild failed! Aborting.\e[0m"
   EXIT_CODE=1
 else
   echo -e "\e[32mBuild succeeded. Starting a new container...\e[0m"
-  $DOCKER run -d --name $CONTAINER_NAME wadmiraal/drupal:$TAG >> /dev/null
+  $DOCKER run -d --name $CONTAINER_NAME rjzaar/opencourse:$TAG >> /dev/null
 
   RUNNING=$($DOCKER ps | grep $CONTAINER_NAME)
   if [[ -z $RUNNING ]]; then
